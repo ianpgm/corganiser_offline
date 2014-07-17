@@ -84,6 +84,7 @@ def determine_lower(core_to_det,section_to_det,width):
 
 def placeWRC(width, depth,sampleID):
 	print("Placing " + sampleID + " at a target depth of " + str(depth) + "m (true depth " + str(starting_depth + depth/correction_factor) + "m)<br>")
+	hit_skipped_section = False
 	for core in core_depth_dict:
 		if depth > hole_depth or depth < 0:
 			print("Error! Sample outside of hole's depth range: " + sampleID + "<br>")
@@ -91,44 +92,43 @@ def placeWRC(width, depth,sampleID):
 		if sampleID in completed_requests:
 			continue
 		#determine target core
-		if depth >= core_depth_dict[core][0] - 0.01 and depth <= core_depth_dict[core][1] + 0.01:
+		if (depth >= core_depth_dict[core][0] - 0.01 and depth <= core_depth_dict[core][1] + 0.01) or hit_skipped_section == True:
 			#determine target section
 			for section_number in range(1,sections_per_core+1):
 				depth_section_base_diff = section_length
 				for i in range(0,sections_per_core):
 					section_base = core_depth_dict[core][0] + (i + 1) * section_length
-					if abs(depth - section_base) < depth_section_base_diff:
+					if abs(depth - section_base) < depth_section_base_diff or hit_skipped_section == True:
 						depth_section_base_diff = abs(depth - section_base)
-						target_section = i
+						target_section = i			
+			if target_section+1 == sections_per_core and skip_dict[core][target_section] and interval > section_length:
+				hit_skipped_section = True
+				break
+			if skip_dict[core][target_section] and interval > section_length:
+				hit_skipped_section = True
+				continue
 			#if it's the last section in the core, it has to be upper
 			if target_section == sections_per_core-1:
 				target_segment = "upper"
 				highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 				lowest_lower_sample = 0
 			else:
-				#determine whether the previous sample was at this section interface
-				highest_upper_request_number = determine_upper(core,target_section,width)[1].split(" ")[0]
-				lowest_lower_request_number = determine_lower(core,target_section,width)[1].split(" ")[0]
-				print("target area")
-				print(core)
-				print(target_section)
-				print("previous requests")
-				print(highest_upper_request_number)
-				print(lowest_lower_request_number)
-				if highest_upper_request_number == sampleID.split(" ")[0]:
+				#if this is a sample that comes around every section, then it needs to be "upper" to match the lowest section in the core
+				if interval <= section_length:
 					target_segment = "upper"
 					highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 				else:
-					if lowest_lower_request_number == sampleID.split(" ")[0]:
-						target_segment = "lower"
-						lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
+					#determine whether the previous sample was at this section interface
+					highest_upper_request_number = determine_upper(core,target_section,width)[1].split(" ")[0]
+					lowest_lower_request_number = determine_lower(core,target_section,width)[1].split(" ")[0]
+					if highest_upper_request_number == sampleID.split(" ")[0]:
+						target_segment = "upper"
+						highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 					else:
-						#determine whether the best section is section 1
-						if target_section == 0 and sections_per_core !=1 and interval > section_length:
+						if lowest_lower_request_number == sampleID.split(" ")[0]:
 							target_segment = "lower"
 							lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
-							highest_upper_sample = section_length
-						else:				
+						else:
 							#go through samples already placed at this interval and determine what the highest upper sample and lowest lower sample are along with their sample request numbers and depths
 							highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 							lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
@@ -155,6 +155,7 @@ def placeWRC(width, depth,sampleID):
 	
 colour_dict = dict()
 name_dict = dict()
+skip_list = list()
 
 for line in open(sys.argv[1]):
 	if line.startswith("hole_name"):
@@ -171,10 +172,12 @@ for line in open(sys.argv[1]):
 		starting_depth = float(line.split("=")[1].strip(" \n"))
 	if line.startswith("starting_core"):
 		starting_core = int(line.split("=")[1].strip(" \n"))
+	
 	if line.startswith("skip"):
-		skip_list = line.split("=")[1].strip(" \n").split(",")
-		for item in enumerate(skip_list):
-			skip_list[item[0]].strip(" ")
+		if len(line.split("=")[1]) > 2:
+			skip_list = line.split("=")[1].strip(" \n").split(",")
+			for item in enumerate(skip_list):
+				skip_list[item[0]].strip(" ")
 			
 	
 	if line.startswith("Begin Requests:"):
@@ -199,14 +202,19 @@ for line in open(sys.argv[1]):
 				for j in range(0, sections_per_core):
 					core_dict["core_" + str(i)].append(dict())
 					skip_dict["core_" + str(i)].append(False)
+		print(skip_list)
 		for skipped_section in skip_list:
+			print(skipped_section)
 			skip_core = skipped_section.split(":")[0]
 			skip_section = skipped_section.split(":")[1]
+			print(skip_core)
 			if skip_core == "all":
 				for core in skip_dict:
+					print('A')
 					skip_dict[core][int(skip_section)-1] = True
 			else:
 				skip_dict["core_" + str(int(skip_core)-1)][int(skip_section)-1] = True
+		print(skip_dict)
 		print("Creating hole " + hole_name + " with depth range " + str(starting_depth) + "m to " + str(full_depth) + "m, core length " + str(core_length) + "m, " + str(sections_per_core) + " sections per core, and " + str(unsampled_length) + "m unsampled depth in between cores. Starting core numbering at " + str(starting_core) + ".<br>" )
 	if line.startswith("request"):
 		interval = section_length + 1

@@ -16,6 +16,8 @@ header_variable_dict = dict()
 header_variable_lengths = [10,2,2,8,1,8,4]
 header_variable_units = ['','m','m','m','','m','']
 
+skipped_sections_dict = dict(['all':'1'])
+
 #CGI input parsing
 
 form = cgi.FieldStorage()
@@ -101,7 +103,7 @@ if "generate" not in form:
 		if header_variable_list[i] == "hole_name":
 			print("<TD rowspan=7><b>Tips:</b><ul><li>Specify depths of \"beginning\" or \"end\" to indicate the top and bottom of the hole.<li>Make sure both request number and name fields are filled before adding a new request or sample<li>To delete a sample or sample series, just empty all of its fields then hit \"Update\"<li>Trying to delete more than one request at once will result in an error.<li>The hole name cannot contain spaces.</ul>")
 
-	print("</TABLE><br>")
+	print("</TABLE><br><TABLE width=600><TR><TD>Skip section <input type=\"text\" name")
 
 	for i in range(0,len(request_list)):
 		print("<TABLE style=\"border: 1px solid black;\"><TR><TD>Request Number: <input size=4 type=\"text\" name=\"" + str(i) + "\", value = \"" + request_list[i] + "\">&nbspRequest Name: <input type=\"text\" name=\"" + str(i)+"name" + "\", value = \"" + name_list[i] + "\">&nbspColour:<select name=\"" + str(i) + "colour\">")

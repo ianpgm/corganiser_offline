@@ -1,0 +1,141 @@
+<html>
+<head>
+	<title>Corganiser Manual</title>
+	<meta charset="UTF-8">
+</head>
+
+<body>
+<h1>Corganiser Manual</h1>
+<div id="intro" style="width:800px">
+<b><a href=#introduction>Introduction</a></b><br><br>
+<b><a href=#web>Web-based Corganiser</a></b><br>
+&nbsp&nbsp<a href=#makenew>Making a new sampling plan</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#hole_specific>Entering hole-specific information</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#new_request>Entering a new request</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#add_sample>Adding samples to a request</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#generate_plan>Generating the sampling plan</a><br>
+&nbsp&nbsp<a href=#edit_existing>Editing an existing sampling plan</a><br><br>
+<b><a href=#local>Corganiser on a local computer</a></b><br>
+&nbsp&nbsp<a href=#warning>Warning</a><br>
+&nbsp&nbsp<a href=#install>Installation</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#requirements>Requirements</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#python>Python</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#reportlab>ReportLab</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#corganiser>Corganiser</a><br>
+&nbsp&nbsp<a href=#commandline>Using command line Corganiser</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#input_file>The ".cor" input file format</a><br>
+&nbsp&nbsp&nbsp&nbsp<a href=#running>Running Corganiser from the command line</a><br><br>
+<b><a href=#organise>How Corganiser organises samples</a></b><br>
+
+<h2 id="introduction">Introduction</h2>
+<p>In a typical scientific drilling expedition, such as carried out by the <a href=http://iodp.org/>International Ocean Discovery Program (IODP)</a>, cores are brought on board the drilling vessel and cut into sections. For analyses that require immediate treatment of the sediment, such as microbiological analyses, these sections are either sub-sampled by syringes or cut into whole-round cores (short core sections usually around 5-10 cm long). Samples are then stored in a way that preserves ephemeral properties, for example by freezing or storing anaerobically at 4ºC. In order to process samples swiftly, most of the planning for which samples should be taken from which depths needs to occur before drilling commences. With many different sample requesters requesting different kinds of samples at different depth intervals, this planning process can  become complicated.</p>
+
+<p>Corganiser is a software tool that aids in the development of such shipboard sampling plans. Corganiser generates PDF-formatted colour-coded diagrams showing how whole rounds should be cut from core sections, labeled, and preserved. Compared to manually producing such diagrams corganiser saves time, which can be particularly helpful for last-minute modifications to sampling plans based on geochemical data collected at a site. In its most user-friendly incarnation, Corganiser is a web-based service that can run from any internet-connected computer or tablet. For more advanced users, Corganiser is also available as a Python script that can be installed on any computer running <a href="http://python.org">Python 2.x</a> with the <a href="http://www.reportlab.com/">ReportLab package</a>. Running Corganiser on your own computer might be good idea if you will have no/slow/intermittent internet access, such as offshore or in a remote land-based location. The figure below provides an overview of how Corganiser is structured with the various routes one could take from the web-based sampling plan input to a hard copy of a finished sampling plan:</p>
+
+<img src="corganiser_flowchart.jpg">
+
+<p>Corganiser was developed during <a href="http://www.eso.ecord.org/expeditions/347/347.php">IODP Expedition 347</a> in the Baltic Sea by microbiologist Ian Marshall with input from ESO staff and the rest of the scientific party. If you have any questions, issues, feedback, or suggestions, please email Ian (ianpgm at biology dot au dot dk).</p>
+
+<h2 id="web">Web-based Corganiser</h2>
+<p>Web-based corganiser home page is accessible from <a href="http://corganiser.au.dk">http://corganiser.au.dk</a>. All functions are accessible from the home page. To see an example of a filled out form, click on "Try out an example sampling plan"</p>
+<h3 id="makenew">Making a new sampling plan</h3>
+<p>From the home page, click on "Make a new sampling plan". This leads to a blank sampling plan input form:</p>
+<img src="inputform.jpg", border=2><br>
+
+<h4 id="hole_specific">Entering hole-specific information</h4>
+<p>Start by filling in the information about the entire hole. The <b>Hole Name</b> cannot contain spaces. The <b>Core Length</b> refers to the length of core accessible to sampling, while the <b>Unsampled Length</b> refers to the extra length in each coring run that contributes to the total depth of the hole without being accessible to sampling (e.g. the core catcher). The <b>Hole Depth</b> must be a multiple of the sum of the <b>Core Length</b> and the <b>Unsampled Length</b>. For example, for a <b>Core Length</b> of 3 m and an <b>Unsampled Length</b> of 0.3 m the total hole depth must equal N*3.3, where N is an integer (9.9 m would be permitted, 10 m would not be permitted). The sections per core refers to the number of sections the core is cut into when first brought on deck, exposing areas that can be cut into for whole round sampling. The <b>Starting Depth</b> is the shallowest depth (metres below seafloor) where sampling begins, and the <b>Starting Core Number</b> is the number given to the first core - subsequent cores will be counted from here. If any of the core-specific parameters (such as <b>Core Length</b>, <b>Unsampled Length</b>, or <b>Sections per Core</b>) are expected to change within a single hole, then multiple sampling plans must be prepared for the hole. 
+</p>
+
+<h4 id="new_request">Entering a new request</h4>
+<p>A sample request typically refers to a request by an individual researcher for samples. There can be multiple different kinds of samples within a given request (i.e. different depth intervals, storage condition notes). All samples within the same request will be given the same colour code on the final PDF output. To add a new sample request just type in the <b>Request Number</b> (typically corresponding to the formal 4-digit IODP request number, but this could also be a word rather than a number), the <b>Request Name</b> (typically responding to the name of the requesting researcher), and the <b>Colour</b> (the colour coding that will be used on the final PDF output). Once the <b>Request Number</b> and <b>Request Name</b> are added to the first request, a new blank request form can be generated by hitting the <b>Update</b> button. The order in which requests are included in the form will determine the order that they appear in the core sampling plan, with the first request at the edge of the section and each subsequent request taken inwards towards the core's middle region. To re-arrange the order of requests, use the <b>Move/Delete request:</b> drop-down menu in the bottom-right hand corner of the request box and select "move request up" or "move request down". This drop-down menu can also be used to delete a request. For extra space at a section's edge for syringe sampling or contamination avoidance you can add extra "dummy" requests.</p>
+
+<h4 id="add_sample">Adding samples to a request</h4>
+<p>The drop-down box in each request labeled <b>Add samples to request:</b> reveals that there are two ways of adding samples to a request: either by specifying a single sample at a single depth (option: "new one-off sample") or by specifying how often a sample should be taken within a given depth interval (option: "new sample series"). The former will be most useful for requesters that request specific but irregular depths, the latter will be most useful for requesters making requests like "10cm whole-round core every 3m."</p>
+<p>To make a new one-off sample, select "new one-off sample" from the drop-down menu. The following fields will appear:<br>
+<img src="one-off-request.jpg"><br>
+Enter the length of the whole-round core (WRC) in centimetres and the target depth for the placement of the sample in metres. Corganiser will not place the sample at the precise depth that you indicate, but rather at the closest appropriate section interface where it can be cut away. Under <b>Notes:</b> you should include information necessary for processing the samples, such as "frozen -80C", "anoxic 4C", or "subsampling" etc. Certain characters are not allowed under the notes field, unfortunately including the degree symbol 'º'.</p>
+<p>To make a new sample series, select "new sample series" from the drop-down menu. The following fields will appear:<br>
+<img src="series-request.jpg"><br>
+Enter the length of the whole-round core (WRC) in centimetres, the interval at which the sample repeats for "every X m" and the depths to start (Y) and stop (Z) that series for "from Y m to Z m." Note that for simplicity's sake the repeating interval does not take into account the "unsampled length". So for one sample every core with 9-m cores and 0.3-m unsampled length, you should enter "every 9 m" rather than "every 9.3 m". If the 9-m core with 0.3-m unsampled length is cut into 6 1.5-m sections and you would like a sample every section, you should enter "every 1.5 m". The <b>Notes:</b> field should be used in the same way as for one-off samples.</p>
+
+<h4 id="generate_plan">Generating the sampling plan</h4>
+<p>Once you've finished your sampling plan, you can produce the colour PDF output and the corganiser (.cor) file by clicking the <b>Generate Sampling Plan</b> button at the base of the page. This will lead to a page with a header saying "Generating corganiser (.cor) file and resulting PDF..." followed by text output for each sample placed, core rendered etc. You can generally ignore the text output, but if Corganiser is not working and you need to do some troubleshooting you should copy and paste that text and include it in the email when you write your question or feedback. Once you scroll down to the bottom of the page you will find the link to your PDF sampling plan - if you need to tweak this beyond what Corganiser is capable of you could use any program that edits PDFs (like Adobe Illustrator). Check your PDF output carefully - if you have too many samples in there (i.e. if you're trying to sample more sediment than you're coring) then the samples might start appearing on top of each other, in which case you should probably revise your input or fix the file manually in Illustrator.</p>
+<p>The second output file that Corganiser produces is your "COR" file - this is a text file with a '.cor' extension that contains all the information you entered into the web form to produce your sampling plan. You can download this and either (a) re-upload it to the Corganser web service later so you can edit your sampling plan or (b) edit it manually in a text editor on your own computer and run it through the command-line version of Corganiser if you don't have internet access.</p>
+<p>If you want to edit the sampling plan you just produced, you can click on <b>Reload this sampling plan for editing</b> and you will be taken back to the filled-out web form.</p>
+
+<h3 id="edit_existing">Editing an existing sampling plan</h3>
+<p>Go to the Corganiser home page and, under <b>Upload and work with an existing sampling plan .cor file:</b>, click <b>Choose File</b>. Then navigate to the folder on your local computer where you saved the .cor file, select the .cor file, and click <b>Open</b>. The file name will appear next to the <b>Choose File</b> button. Then click <b>Submit</b>. This should take you to the standard "New Sampling Plan" form, but with the form filled in with your previous sampling plan. You can now edit this sampling plan and generate a new PDF and .cor file just as described above for a new sampling plan.</p>
+
+<h2 id="local">Corganiser on a local computer</h2>
+<h3 id="warning">Warning</h3>
+The locally run version of Corganiser is a Python script run from the command line - if you don't understand what this means then you should probably stop reading now and find someone who does know what it means, educate yourself, or just stick to using the web-based version. For educating yourself, the <a href="http://software-carpentry.org/">Software Carpentry</a> lessons on the <a href="http://software-carpentry.org/v4/shell/index.html">Unix Shell</a> and <a href="http://software-carpentry.org/v4/python/index.html">Python</a> are probably a good place to start.
+<h3 id="install">Installation</h3>
+<H4 id="requirements">Requirements</H4>
+<p>Corganiser should work on any computer running Python 2.7 and ReportLab 2.7 - this includes GNU/Linux, Mac OS X, and Windows.</p>
+<H4 id="python">Python</h4>
+<p>Make sure that <a href='http://python.org'>Python</a> 2.7 is installed on the computer you would like to run Corganiser on. It will probably be installed already on most linux installations, users of Mac OS X and Windows may need to install it separately.</p>
+<H4 id="reportlab">ReportLab</H4>
+<p>First install <a href="http://www.reportlab.com">ReportLab</a>, a tool for rendering graphics in PDF format from Python. To do this, download the <a href="http://www.reportlab.com/software/opensource/rl-toolkit/download/">source</a> and follow the instructions on their <a href="https://bitbucket.org/rptlab/reportlab">reportlab bitbucket page</a>.</p>
+<H4 id="corganiser">Corganiser</h4>
+<p>The Corganiser python script and an example input file are included in a gzipped tar file linked from the homepage (or click <a href="corganiser_commandline.tar.gz">here</a> to download it). Once you unzip this file you should be able to run the example file using the following command:</p>
+<pre>python corganiser_universal_3.py example_sampling_plan.cor</pre>
+<p>This will generate the file <pre>example_sampling_plan.cor.pdf</pre> in the directory where it was run, which should be the same as running the example on the website.
+
+<h3 id="commandline">Using command line Corganiser</h3>
+<H4 id="input_file">The ".cor" input file format</H4>
+<p>Check the <a href="example_sampling_plan.cor">.cor file example</a> to see the ".cor" file format. The file format used as input by Corganiser to make sampling plans is a text file with two sections: a header (describing the hole) and a sample request section (describing each sample request). The header takes the following form: 
+<pre>hole_name = "Example"
+core_length = 3
+unsampled_length = 0.3
+hole_depth = 89.1
+sections_per_core = 2
+starting_depth = 0
+starting_core = 1</pre>
+All depths and lengths are metres, and the same rules apply here as do the rules for the web-based version.</p>
+
+<p>Following the header section, requests and samples are added in the following way:
+
+<pre>
+Begin Requests:
+
+request 1830: "Torti" : "salmon"
+"10cm WRC -> subsampling" every 1.5 from beginning to 9.9
+"10cm WRC -> subsampling" every 3 from 9.9 to 33
+"10cm WRC -> subsampling" every 9 from 33 to 42.9
+"10cm WRC -> subsampling" every 1.5 from 42.9 to 66
+"10cm WRC -> subsampling" every 9 from 66 to end
+
+request 1955: "Lloyd" : "yellow"
+"5cm WRC-> -80C" at 1.5
+"5cm WRC-> -80C" every 6 from 3.3 to end
+
+request 9999: "Interstitial Water" : "turquoise"
+"10cm WRC -> IW" every 1.5 from beginning to 23.1
+"10cm WRC -> 1909/1870/2013 subsampling" every 1.5 from beginning to 23.1
+"10cm WRC -> IW" every 3 from 23.1 to end
+"10cm WRC -> 1909/1870/2013 subsampling" every 3 from 23.1 to end
+</pre>
+
+The header ends and the request section begins with the "Begin Requests:" line. A new request is declared by the word "request" on a new line, followed by a space and the request number, followed by a colon and the request name in quotation marks, followed by another colon and the colour of the request in quotation marks. A list of allowable colour names can be found <a href="colors.txt">here</a>. Every line following a new declared request is considered a new one-off sample or sample series.</p>
+
+<p>A one-off is structured as <pre>"Xcm WRC -> Notes" at Y</pre> where X is the length of the whole-round in centimetres, Notes are the text notes to appear next to each sample, and Y is the target depth of the sample</p>
+
+A series is structured as <pre>"Xcm WRC -> Notes" every Y from A to B</pre> where X is the length of the whole-round in centimetres, Notes are the text notes to appear next to each sample, Y is the metre distance between samples (discounting the unsampled length) and A and B are the upper and lower depths of the series in metres.</p>
+
+<p>Save the .cor file as a regular text file (the .cor file extension isn't actually necessary, just a handy way of keeping track of things) and it's ready for turning into a PDF either locally using corganiser_universal_3.py or using the web service.</p>
+	
+<h4 id="running">Running Corganiser from the command line</h4>
+<p>Running Corganiser from the command line is simple - the only parameter is the input file. Just put the input .cor file in the same folder as the script and type <pre>python corganiser_universal_3.py filename.cor</pre> and it will generate the PDF file <pre>filename.cor.pdf</pre> that can be printed or edited further.</p>
+
+<h2 id="organise">How Corganiser organises samples</h2>
+<p>For every sample to be positioned in the sampling plan, the following steps are taken:
+<ol>
+	<li>The core that the target depth falls in is identified. If a target depth is at a section boundary it will target the uppermost of the two cores.
+	<li>The section boundary closest to the target depth is identified.
+	<li>The sample is placed at that section boundary below or above other samples already placed. If there is a shorter length of samples above than below the section boundary the sample is placed there, otherwise it is place below the section boundary.
+	<li>To avoid contamination, samples are only placed in section 1 if the sampling interval is equal to or less than the section length (i.e. if a sample is desired every section). Samples are never placed at the top of section 1 due to the extreme contamination risk.
+	<li>Similarly, to avoid contamination, samples are only placed at the bottom of the last section if the sampling interval is equal to or less than the section length.
+	<li>Sampling intervals less than the section length will result in samples directly adjacent to one another - basically if you want to have more than one sample per section for a request then Corganiser cannot do this.
+	<li>There are still some odd bugs in the sample placement system - it works very well for the core and section lengths used on Expedition 347, but may produce problems for other configurations. Please send an e-mail to ianpgm at biology dot au dot dk if you have some strange or unexpected results and I will attempt to address the issues.
+</div>
+</body></html>

@@ -1,0 +1,57 @@
+hole_name = "Example"
+core_length = 3
+unsampled_length = 0.3
+hole_depth = 89.1
+sections_per_core = 2
+starting_depth = 0
+starting_core = 1
+
+Begin Requests:
+
+request 1830: "Torti" : "salmon"
+"10cm WRC -> subsampling" every 1.5 from beginning to 9.9
+"10cm WRC -> subsampling" every 3 from 9.9 to 33
+"10cm WRC -> subsampling" every 9 from 33 to 42.9
+"10cm WRC -> subsampling" every 1.5 from 42.9 to 66
+"10cm WRC -> subsampling" every 9 from 66 to end
+
+request 1955: "Lloyd" : "yellow"
+"5cm WRC -> -80C" at 1.5
+"5cm WRC -> -80C" every 6 from 3.3 to end
+
+request 9999: "Interstitial Water" : "turquoise"
+"10cm WRC -> IW" every 1.5 from beginning to 23.1
+"10cm WRC -> 1909/1870/2013 subsampling" every 1.5 from beginning to 23.1
+"10cm WRC -> IW" every 3 from 23.1 to end
+"10cm WRC -> 1909/1870/2013 subsampling" every 3 from 23.1 to end
+
+request 1838: "Zhang" : "pink"
+"10cm WRC -> anoxic -20C" every 1.5 from beginning to 13.2
+"10cm WRC -> anoxic -20C" every 9 from 13.2 to end
+"5cm WRC -> anoxic 4C" every 1.5 from beginning to 13.2
+"5cm WRC -> anoxic 4C" every 9 from 13.2 to end
+"35cm WRC -> -80C" every 9 from 6.6 to end
+
+request 1963: "Vandieken" : "red"
+"10cm WRC -> subsampling" every 9 from 3.3 to end
+"10cm WRC -> subsampling" at 1.5
+
+request 1882: "Røy/Jørgensen" : "lightblue"
+"10cm WRC -> 50mL subcore, anoxic 4C" every 1.5 from beginning to 13.2
+"10cm WRC -> 50mL subcore, anoxic 4C" every 9 from 13.2 to end
+
+request 1898: "Cragg" : "lightgreen"
+"40cm WRC -> anoxic 4C" at 5
+"30cm WRC -> anoxic 4C" at 21
+"30cm WRC -> anoxic 4C" at 43
+"30cm WRC -> anoxic 4C" at 61
+"30cm WRC -> anoxic 4C" at 76
+"5cm WRC -> -80C" at 5
+"5cm WRC -> -80C" at 21
+"5cm WRC -> -80C" at 43
+"5cm WRC -> -80C" at 61
+"5cm WRC -> -80C" at 76
+
+request 1844: "Xiao" : "violet"
+"10cm WRC -> anoxic 4C" every 3 from beginning to 13.2
+

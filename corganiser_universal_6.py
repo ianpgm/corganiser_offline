@@ -202,17 +202,16 @@ for line in open(sys.argv[1]):
 				for j in range(0, sections_per_core):
 					core_dict["core_" + str(i)].append(dict())
 					skip_dict["core_" + str(i)].append(False)
-		print(skip_list)
 		for skipped_section in skip_list:
-			print(skipped_section)
-			skip_core = skipped_section.split(":")[0]
-			skip_section = skipped_section.split(":")[1]
+			skip_core = skipped_section.split(":")[0].strip(" ")
+			skip_section = skipped_section.split(":")[1].strip(" ")
 			print(skip_core)
-			if skip_core == "all":
+			if skip_core == 'all':
+				print("A")
 				for core in skip_dict:
-					print('A')
 					skip_dict[core][int(skip_section)-1] = True
 			else:
+				print("B")
 				skip_dict["core_" + str(int(skip_core)-1)][int(skip_section)-1] = True
 		print(skip_dict)
 		print("Creating hole " + hole_name + " with depth range " + str(starting_depth) + "m to " + str(full_depth) + "m, core length " + str(core_length) + "m, " + str(sections_per_core) + " sections per core, and " + str(unsampled_length) + "m unsampled depth in between cores. Starting core numbering at " + str(starting_core) + ".<br>" )

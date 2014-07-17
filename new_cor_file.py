@@ -16,7 +16,7 @@ header_variable_dict = dict()
 header_variable_lengths = [10,2,2,8,1,8,4]
 header_variable_units = ['','m','m','m','','m','']
 
-skipped_sections_dict = dict(['all':'1'])
+
 
 #CGI input parsing
 
@@ -27,7 +27,19 @@ for variable in header_variable_list:
 	if header_variable_dict[variable] == None or "clear" in form:
 		header_variable_dict[variable] = ""
 	header_variable_dict[variable] = cgi.escape(header_variable_dict[variable])
-	
+
+skipped_sections_list = list()
+skipped_cores_list = list()
+
+for i in range(0,100):
+	if form.getfirst("skipped_section"+str(i)) != None and "clear" not in form:
+		skipped_sections_list.append(form.getfirst("skipped_section"+str(i)))
+		skipped_cores_list.append(form.getfirst("skipped_core"+str(i)))
+	else:
+		skipped_sections_list.append("")
+		skipped_cores_list.append("")
+		break
+
 request_list = list()
 name_list = list()
 colour_list = list()
@@ -102,9 +114,15 @@ if "generate" not in form:
 		print("<TD width=100><input size = " + str(header_variable_lengths[i]) +" type=\"text\" name=\"" + header_variable_list[i] + "\", value = \"" + header_variable_dict[header_variable_list[i]] + "\">" + header_variable_units[i] + "</TD>")
 		if header_variable_list[i] == "hole_name":
 			print("<TD rowspan=7><b>Tips:</b><ul><li>Specify depths of \"beginning\" or \"end\" to indicate the top and bottom of the hole.<li>Make sure both request number and name fields are filled before adding a new request or sample<li>To delete a sample or sample series, just empty all of its fields then hit \"Update\"<li>Trying to delete more than one request at once will result in an error.<li>The hole name cannot contain spaces.</ul>")
-
-	print("</TABLE><br><TABLE width=600><TR><TD>Skip section <input type=\"text\" name")
-
+	
+	print("</TABLE><br><TABLE width=250 style=\"border: 1px solid black;\">")
+	
+	for skipped_section in enumerate(skipped_sections_list):
+		print("<TR width=250><TD>Skip section <input type=\"text\" size=3 name=\"skipped_section" + str(skipped_section[0]) + "\" value=\"" + skipped_section[1] + "\"> core <input type=\"text\" size=3 name=\"skipped_core" + str(skipped_section[0]) + "\" value=\"" + skipped_cores_list[skipped_section[0]] + "\">")
+	
+	
+	print("</TABLE>To skip a given section in all cores just enter \"all\" as the core number.<br>To add a new section to skip press \"Enter\" after entering a core or section or click \"Update\" below.<br><br>")
+		
 	for i in range(0,len(request_list)):
 		print("<TABLE style=\"border: 1px solid black;\"><TR><TD>Request Number: <input size=4 type=\"text\" name=\"" + str(i) + "\", value = \"" + request_list[i] + "\">&nbspRequest Name: <input type=\"text\" name=\"" + str(i)+"name" + "\", value = \"" + name_list[i] + "\">&nbspColour:<select name=\"" + str(i) + "colour\">")
 	
@@ -147,7 +165,17 @@ if "generate" in form:
 			output_file.write(header_variable + " = \"" + header_variable_dict[header_variable] + "\"\n")
 		else:
 			output_file.write(header_variable + " = " + header_variable_dict[header_variable] + "\n")
-	output_file.write("\nBegin Requests:\n\n")
+	
+	output_file.write("skip = ")
+	skip_string = str()
+	
+	for skipped_section in enumerate(skipped_sections_list):
+		if skipped_section[1] != "":
+			skip_string = skip_string + skipped_cores_list[skipped_section[0]] + ":" + skipped_section[1] + ", "
+	
+	output_file.write(skip_string.strip(", "))
+	
+	output_file.write("\n\nBegin Requests:\n\n")
 	
 	
 	for i in range(0,len(request_list)-1):
@@ -164,7 +192,7 @@ if "generate" in form:
 	output_file.close()
 	
 	print(len(request_list))
-	os.system("python corganiser_universal_4.py " + filename)
+	os.system("python corganiser_universal_6.py " + filename)
 	
 	short_filename = filename.split("/")[-1]
 	

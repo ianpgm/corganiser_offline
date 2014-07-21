@@ -1,0 +1,26 @@
+hole_name = "test"
+core_length = 3
+unsampled_length = 0.3
+hole_depth = 9.9
+sections_per_core = 2
+starting_depth = 0
+starting_core = 1
+skip = 
+
+Begin Requests:
+
+request 1234: "Marshall" : "gray"
+"5cm WRC -> 4C anoxic" at 2
+
+request 2345: "Marshall" : "gainsboro"
+"5cm WRC -> " at 2
+
+request 3456: "Marshall" : "darkslategray"
+"5cm WRC -> " at 2
+
+request 4567: "Marshall" : "lightgrey"
+"5cm WRC -> " at 2
+
+request 5678: "Marshall" : "whitesmoke"
+"5cm WRC -> " at 2
+

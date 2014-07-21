@@ -1,0 +1,14 @@
+hole_name = "test"
+core_length = 3
+unsampled_length = 0.3
+hole_depth = 9.9
+sections_per_core = 2
+starting_depth = 0
+starting_core = 1
+skip = 
+
+Begin Requests:
+
+request 1234: "Marshall" : "gray"
+"5cm WRC -> 4C anoxic" at 2
+

@@ -7,9 +7,10 @@ from decimal import Decimal
 
 completed_requests = set()
 previous_sample = ['empty','empty']
-
 print("Content-type:text/html\r\n\r\n")
 print("<HTML><HEAD><TITLE>Corganiser New .cor File</TITLE></HEAD><BODY><H1>Generating corganiser (.cor) file and resulting PDF...</H1>\n")
+
+
 
 def error_check(sample):
 	if sample[0] < -0.01 or sample[1] < -0.01:
@@ -94,21 +95,28 @@ def placeWRC(width, depth,sampleID):
 		#determine target core
 		if (depth >= core_depth_dict[core][0] - 0.01 and depth <= core_depth_dict[core][1] + 0.01) or hit_skipped_section == True:
 			#determine target section
-			for section_number in range(1,sections_per_core+1):
-				depth_section_base_diff = section_length
-				for i in range(0,sections_per_core):
-					section_base = core_depth_dict[core][0] + (i + 1) * section_length
-					if abs(depth - section_base) < depth_section_base_diff or hit_skipped_section == True:
-						depth_section_base_diff = abs(depth - section_base)
-						target_section = i			
-			if target_section+1 == sections_per_core and skip_dict[core][target_section] and interval > section_length:
-				hit_skipped_section = True
-				break
-			if skip_dict[core][target_section] and interval > section_length:
-				hit_skipped_section = True
-				continue
-			#if it's the last section in the core, it has to be upper
-			if target_section == sections_per_core-1:
+
+#			for section_number in range(1,sections_per_core+1):
+			depth_section_base_diff = section_length
+			target_section = 0
+			adjusted_due_to_skip = False
+			for i in range(0,sections_per_core):
+				section_base = core_depth_dict[core][0] + (i + 1) * section_length
+				if abs(depth - section_base) < depth_section_base_diff or hit_skipped_section:
+					depth_section_base_diff = abs(depth - section_base)
+					target_section = i
+					hit_skipped_section = False			
+				if target_section+1 == sections_per_core and skip_dict[core][target_section] and interval > section_length:
+					print(sampleID + " target section is on the skip list (core "+core+"section "+str(target_section)+"), skipping to next core.")
+					hit_skipped_section = True
+					break
+				if skip_dict[core][target_section] and interval > section_length:
+					print(sampleID + " target section is on the skip list (core "+core+"section "+str(target_section)+"), skipping to next section.")
+					hit_skipped_section = True
+					adjusted_due_to_skip = True
+					continue
+			#if it's the last section in the core, it has to be upper, unless it was moved down there from a higher section.
+			if target_section == sections_per_core-1 and adjusted_due_to_skip == False:
 				target_segment = "upper"
 				highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 				lowest_lower_sample = 0
@@ -118,28 +126,32 @@ def placeWRC(width, depth,sampleID):
 					target_segment = "upper"
 					highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 				else:
-					#determine whether the previous sample was at this section interface
-					highest_upper_request_number = determine_upper(core,target_section,width)[1].split(" ")[0]
-					lowest_lower_request_number = determine_lower(core,target_section,width)[1].split(" ")[0]
-					if highest_upper_request_number == sampleID.split(" ")[0]:
-						target_segment = "upper"
-						highest_upper_sample = determine_upper(core,target_section,width)[0][0]
+					#Was this sample moved because of a skipped section? If so then it needs to be lower (relative to the higher section) to get it as close as possible to the desired section.
+					if adjusted_due_to_skip:
+						target_section = target_section - 1
+						target_segment = "lower"
+						lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
 					else:
-						if lowest_lower_request_number == sampleID.split(" ")[0]:
-							target_segment = "lower"
-							lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
-						else:
-							#go through samples already placed at this interval and determine what the highest upper sample and lowest lower sample are along with their sample request numbers and depths
+						#determine whether the previous sample was at this section interface
+						highest_upper_request_number = determine_upper(core,target_section,width)[1].split(" ")[0]
+						lowest_lower_request_number = determine_lower(core,target_section,width)[1].split(" ")[0]
+						if highest_upper_request_number == sampleID.split(" ")[0]:
+							target_segment = "upper"
 							highest_upper_sample = determine_upper(core,target_section,width)[0][0]
-							lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
-							print(highest_upper_sample)
-							print(lowest_lower_sample)
-							if section_length - highest_upper_sample <= lowest_lower_sample:
-								target_segment = "upper"
-							else:
+						else:
+							if lowest_lower_request_number == sampleID.split(" ")[0]:
 								target_segment = "lower"
-			
-			print(target_segment)
+								lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
+							else:
+								#go through samples already placed at this interval and determine what the highest upper sample and lowest lower sample are along with their sample request numbers and depths
+								highest_upper_sample = determine_upper(core,target_section,width)[0][0]
+								lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
+								print(highest_upper_sample)
+								print(lowest_lower_sample)
+								if section_length - highest_upper_sample <= lowest_lower_sample:
+									target_segment = "upper"
+								else:
+									target_segment = "lower"
  			
 			if target_segment == "lower":
 				core_dict[core][target_section+1][sampleID] = [lowest_lower_sample, lowest_lower_sample + width]
@@ -205,15 +217,11 @@ for line in open(sys.argv[1]):
 		for skipped_section in skip_list:
 			skip_core = skipped_section.split(":")[0].strip(" ")
 			skip_section = skipped_section.split(":")[1].strip(" ")
-			print(skip_core)
 			if skip_core == 'all':
-				print("A")
 				for core in skip_dict:
 					skip_dict[core][int(skip_section)-1] = True
 			else:
-				print("B")
 				skip_dict["core_" + str(int(skip_core)-1)][int(skip_section)-1] = True
-		print(skip_dict)
 		print("Creating hole " + hole_name + " with depth range " + str(starting_depth) + "m to " + str(full_depth) + "m, core length " + str(core_length) + "m, " + str(sections_per_core) + " sections per core, and " + str(unsampled_length) + "m unsampled depth in between cores. Starting core numbering at " + str(starting_core) + ".<br>" )
 	if line.startswith("request"):
 		interval = section_length + 1

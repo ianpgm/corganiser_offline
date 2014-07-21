@@ -1,0 +1,14 @@
+hole_name = ""
+core_length = 
+unsampled_length = 
+hole_depth = 
+sections_per_core = 
+starting_depth = 
+starting_core = 
+skip = 1:1
+
+Begin Requests:
+
+request 1234: "Marshall" : "aqua"
+"5cm WRC -> 4C anoxic" at 4
+

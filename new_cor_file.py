@@ -50,6 +50,9 @@ def process_input_file(function_input_file):
 				for skipped_section in skip_list:
 					skipped_cores_list.append(skipped_section.split(":")[0].strip(" "))
 					skipped_sections_list.append(skipped_section.split(":")[1].strip(" "))
+			if len(skipped_sections_list) == 0:
+				skipped_sections_list.append("")
+				skipped_cores_list.append("")
 		if line.startswith("request"):
 			request_list.append(line.split(" ")[1].split(":")[0])
 			name_list.append(line.split(":")[1].strip("\" \n"))
@@ -77,9 +80,6 @@ def process_input_file(function_input_file):
 					oneoff_sample_dict[request_counter][-1].append(stop_depth)
 					notes = request_label.split(">")[1].strip(" \n")
 					oneoff_sample_dict[request_counter][-1].append(notes)
-		if len(skipped_sections_list) == 0:
-			skipped_sections_list.append("")
-			skipped_cores_list.append("")
 
 	request_list.append("")
 	name_list.append("")

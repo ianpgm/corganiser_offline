@@ -315,6 +315,9 @@ def draw_short_cores():
 					descriptor_stripped = descriptor_stripped + " " + word
 				c.drawString(6.1*cm, ((lower_limit+upper_limit)/2-0.1)*cm, descriptor_stripped)
 #				c.drawString(6.1*cm, ((lower_limit+upper_limit)/2-0.1)*cm, descriptor)
+				c.setFont("Helvetica-Oblique", 7)
+				c.drawString(3.05*cm, (upper_limit-0.25)*cm, str(100*section[WRC][0]))
+				c.setFont("Helvetica", 8)
 			section_counter = section_counter + 1
 			label_counter = 0
 			for request_number in label_dict:

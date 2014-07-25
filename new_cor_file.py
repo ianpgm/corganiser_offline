@@ -80,7 +80,10 @@ def process_input_file(function_input_file):
 					oneoff_sample_dict[request_counter][-1].append(stop_depth)
 					notes = request_label.split(">")[1].strip(" \n")
 					oneoff_sample_dict[request_counter][-1].append(notes)
-
+	
+	skipped_sections_list.append("")
+	skipped_cores_list.append("")
+	
 	request_list.append("")
 	name_list.append("")
 	colour_list.append("")
@@ -180,13 +183,13 @@ if "generate" not in form:
 		if header_variable_list[i] == "hole_name":
 			print("<TD rowspan=7><b>Tips:</b><ul><li>Specify depths of \"beginning\" or \"end\" to indicate the top and bottom of the hole.<li>Make sure both request number and name fields are filled before adding a new request or sample<li>To delete a sample or sample series, just empty all of its fields then hit \"Update\"<li>Trying to delete more than one request at once will result in an error.<li>The hole name cannot contain spaces.</ul>")
 	
-	print("</TABLE><br><TABLE width=250 style=\"border: 1px solid black;\">")
+	print("</TABLE><br><TABLE width=450 style=\"border: 1px solid black;\">")
 	
 	for skipped_section in enumerate(skipped_sections_list):
-		print("<TR width=250><TD>Skip section <input type=\"text\" size=3 name=\"skipped_section" + str(skipped_section[0]) + "\" value=\"" + skipped_section[1] + "\"> core <input type=\"text\" size=3 name=\"skipped_core" + str(skipped_section[0]) + "\" value=\"" + skipped_cores_list[skipped_section[0]] + "\">")
+		print("<TR width=450><TD>Skip section <input type=\"text\" size=3 name=\"skipped_section" + str(skipped_section[0]) + "\" value=\"" + skipped_section[1] + "\"> core <input type=\"text\" size=3 name=\"skipped_core" + str(skipped_section[0]) + "\" value=\"" + skipped_cores_list[skipped_section[0]] + "\">")
 	
 	
-	print("</TABLE>To skip a given section in all cores just enter \"all\" as the core number.<br>To add a new section to skip press \"Enter\" after entering a core or section or click \"Update\" below.<br><br>")
+	print("<br>To skip a given section in all cores enter \"all\" as the core number.</TABLE><br>")
 		
 	for i in range(0,len(request_list)):
 		print("<TABLE style=\"border: 1px solid black;\"><TR><TD>Request Number: <input size=4 type=\"text\" name=\"" + str(i) + "\", value = \"" + request_list[i] + "\">&nbspRequest Name: <input type=\"text\" name=\"" + str(i)+"name" + "\", value = \"" + name_list[i] + "\">&nbspColour:<select name=\"" + str(i) + "colour\">")

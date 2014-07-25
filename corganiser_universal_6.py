@@ -422,8 +422,20 @@ def draw_long_cores():
 	c.save()
 
 
+def tdt_output():
+	tdt_output_file = open(sys.argv[1] + ".tdt", "w")
+	tdt_output_file.write("Core\tCore_upper_depth\tCore_lower_depth\tSection\tSample_ID\tWRC_upper_depth_in_section\tWRC_lower_depth_in_section\n")
+	for core in core_dict:
+		core_number = int(core.split("_")[1])
+		str_core_number = str(starting_core + core_number)
+		for section in enumerate(core_dict[core]):
+			for WRC in section[1]:
+				tdt_output_file.write(str_core_number + "\t" + str(float(starting_depth + core_depth_dict[core][0] + float(core_number)*unsampled_length)) + "\t" + str(float(starting_depth + core_depth_dict[core][1] + float(core_number+1)*unsampled_length)) + "\t" + str(section[0]+1) + "\t\'" + WRC + '\'\t' + str(section[1][WRC][0]) + '\t' + str(section[1][WRC][1]) + "\n")
+
 if(sections_per_core <= 3):
 	draw_short_cores()
 else:
 	draw_long_cores()
+
+tdt_output()
 								

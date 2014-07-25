@@ -264,6 +264,7 @@ if "generate" in form:
 	
 	
 	print("<br>Sampling plan in PDF format: <A HREF=\"" + "/output_files/" + short_filename + ".pdf\">"+short_filename+".pdf</A>")
+	print("<br>Sampling plan in tab-delimited text (tdt) format: <A HREF=\"" + "/output_files/" + short_filename + ".tdt\">"+short_filename+".tdt</A>")
 	print("<br>Sampling plan in COR format (for future use by uploading back to this site or use in command line mode): <A HREF=\"" + "/output_files/" + short_filename + "\">"+short_filename+"</A>")
 	print("<br><a href=\"new_cor_file.py?serverfile=" + short_filename + "\">Reload this sampling plan for editing.</a>")
 	

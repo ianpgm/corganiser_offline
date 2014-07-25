@@ -5,7 +5,7 @@ hole_depth = 89.1
 sections_per_core = 2
 starting_depth = 0
 starting_core = 1
-skip = all:1
+skip = all:1, 2:2
 
 Begin Requests:
 

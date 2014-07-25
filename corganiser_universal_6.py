@@ -106,28 +106,31 @@ def placeWRC(width, depth,sampleID):
 					depth_section_base_diff = abs(depth - section_base)
 					target_section = i
 					hit_skipped_section = False			
-				if target_section+1 == sections_per_core and skip_dict[core][target_section] and interval > section_length:
-					print(sampleID + " target section is on the skip list (core "+core+"section "+str(target_section)+"), skipping to next core.")
-					hit_skipped_section = True
-					break
 				if skip_dict[core][target_section] and interval > section_length:
 					print(sampleID + " target section is on the skip list (core "+core+"section "+str(target_section)+"), skipping to next section.")
 					hit_skipped_section = True
 					adjusted_due_to_skip = True
 					continue
+			if target_section+1 == sections_per_core and skip_dict[core][target_section] and interval > section_length:
+				print(sampleID + " target section is on the skip list (core "+core+"section "+str(target_section)+"), skipping to next core.")
+				hit_skipped_section = True
+				continue
 			#if it's the last section in the core, it has to be upper, unless it was moved down there from a higher section.
 			if target_section == sections_per_core-1 and adjusted_due_to_skip == False:
+				print("A")
 				target_segment = "upper"
 				highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 				lowest_lower_sample = 0
 			else:
 				#if this is a sample that comes around every section, then it needs to be "upper" to match the lowest section in the core
 				if interval <= section_length:
+					print("B")
 					target_segment = "upper"
 					highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 				else:
 					#Was this sample moved because of a skipped section? If so then it needs to be lower (relative to the higher section) to get it as close as possible to the desired section.
 					if adjusted_due_to_skip:
+						print("C")
 						target_section = target_section - 1
 						target_segment = "lower"
 						lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
@@ -136,21 +139,26 @@ def placeWRC(width, depth,sampleID):
 						highest_upper_request_number = determine_upper(core,target_section,width)[1].split(" ")[0]
 						lowest_lower_request_number = determine_lower(core,target_section,width)[1].split(" ")[0]
 						if highest_upper_request_number == sampleID.split(" ")[0]:
+							print("D")
 							target_segment = "upper"
 							highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 						else:
 							if lowest_lower_request_number == sampleID.split(" ")[0]:
+								print("E")
 								target_segment = "lower"
 								lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
 							else:
 								#go through samples already placed at this interval and determine what the highest upper sample and lowest lower sample are along with their sample request numbers and depths
+								print("F")
 								highest_upper_sample = determine_upper(core,target_section,width)[0][0]
 								lowest_lower_sample = determine_lower(core,target_section,width)[0][1]
 								print(highest_upper_sample)
 								print(lowest_lower_sample)
 								if section_length - highest_upper_sample <= lowest_lower_sample:
+									print("G")
 									target_segment = "upper"
 								else:
+									print("H")
 									target_segment = "lower"
  			
 			if target_segment == "lower":
